@@ -1,0 +1,30 @@
+
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"  # Mapea el puerto 6379 del contenedor al host
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"  # Mapea el puerto 5432 del contenedor al host
+
+  node-app:
+    build:
+      context: ./app # Construye la imagen desde el Dockerfile en el directorio node-app
+    ports:
+      - "3000:3000"  # Mapea el puerto 3000 del contenedor al host
+    environment:
+      REDIS_HOST: redis
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    depends_on:
+      - redis
+      - postgres
